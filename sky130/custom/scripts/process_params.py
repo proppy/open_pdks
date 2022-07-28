@@ -87,7 +87,18 @@ for dirpath, dirnames, filenames in os.walk(walkpath):
                                     gparam = token.split('=')
                                     if len(gparam) == 2:
                                         if gparam[0] == 'std':
-                                            std_dev = float(gparam[1])
+                                            try:
+                                                std_dev = float(gparam[1])
+                                            except:
+                                                # This specifically handles a case 'std=x*process_mc_factor'
+                                                stdexpr = gparam[1].split('*')
+                                                try:
+                                                    std_dev = float(stdexpr[0])
+                                                except:
+                                                    std_dev = 1.0
+                                                    std_scale = gparam[1] + '*'
+                                                else:
+                                                    std_scale = stdexpr[1] + '*'
                                         elif gparam[0] == 'percent' and gparam[1] == 'yes':
                                             gtype = ''
                                 if gtype == '':
@@ -102,7 +113,18 @@ for dirpath, dirnames, filenames in os.walk(walkpath):
                                     gparam = token.split('=')
                                     if len(gparam) == 2:
                                         if gparam[0] == 'std':
-                                            std_dev = float(gparam[1])
+                                            try:
+                                                std_dev = float(gparam[1])
+                                            except:
+                                                # This specifically handles a case 'std=x*process_mc_factor'
+                                                stdexpr = gparam[1].split('*')
+                                                try:
+                                                    std_dev = float(stdexpr[0])
+                                                except:
+                                                    std_dev = 1.0
+                                                    std_scale = gparam[1] + '*'
+                                                else:
+                                                    std_scale = stdexpr[1] + '*'
                                 replacement = ' + {}*EXP(AGAUSS(0,{!s},1))'.format(pr_switch_param, std_dev)
                                 process_params.append((process_param, replacement))
 
